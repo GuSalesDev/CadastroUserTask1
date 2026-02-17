@@ -1,13 +1,13 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-     
-    static ArrayList<Usuario> usuarios = new ArrayList<>(); 
-     static Scanner scanner = new Scanner(System.in); 
+
+     static Scanner scanner = new Scanner(System.in);
+     static UsuarioService service = new UsuarioService();
 
         public static void main(String[] args) {
-            int opcao = 0;
+            int opcao;
+
             do {
                 System.out.println("\n===== MENU =====");
                 System.out.println("1 - Cadastrar Usuario");
@@ -16,24 +16,82 @@ public class Main {
                 System.out.println("4 - Remover Usuario");
                 System.out.println("5 - Atualizar Usuario");
                 System.out.println("6 - Sair");
+                
                 opcao = scanner.nextInt();
                 scanner.nextLine(); 
+                
                 switch (opcao) {
                     case 1:
-                        cadastrarUsuario();
+                        System.out.println("Digite o nome do usuario:");
+                        String nome = scanner.nextLine();
+
+                        System.out.println("Digite a idade do usuario:");
+                        int idade = scanner.nextInt();
+                        scanner.nextLine();
+
+                        System.out.println("Digite o email do usuario:");
+                        String email = scanner.nextLine();
+
+                        Usuario usuario = new Usuario(nome, idade, email);
+                        service.cadastrarUsuario(usuario);
+
+                        System.out.println("Usuario cadastrado com sucesso!");
                         break;
+                    
                     case 2:
-                        listarUsuarios();
+                        if (service.listarUsuarios().isEmpty()) {
+                            System.out.println("Nenhum usuario cadastrado!");
+                        } else {
+                            for (Usuario u : service.listarUsuarios()) {
+                                    System.out.println(u);
+                            }
+                        }
                         break;
+
                     case 3:
-                        buscarUsuario();
+                        System.out.println("Digite o email do usuario que deseja buscar:");
+                        String emailBusca = scanner.nextLine();
+
+                        Usuario encontrado = service.buscarPorEmail(emailBusca);
+                        if (encontrado != null) {
+                            System.out.println("Usuario encontrado: " + encontrado);
+                        } else {
+                            System.out.println("Usuario nao encontrado!");
+                        }
                         break;
+
                     case 4:
-                        removerUsuario();
+                        System.out.println("Digite o email do usuario que deseja remover:");
+                        String emailRemover = scanner.nextLine();
+
+                        if (service.removerPorEmail(emailRemover)) {
+                            System.out.println("Usuario removido com sucesso!");
+                        } else {
+                            System.out.println("Usuario nao encontrado!");
+                        }
                         break;
+
                     case 5:
-                        atualizarUsuario();
-                        break;
+                        System.out.println("Digite o email do usuario que deseja atualizar:");
+                        String emailAtualizar = scanner.nextLine();
+
+                        System.out.println("Novo nome:");
+                        String novoNome = scanner.nextLine();
+
+                        System.out.println("Nova idade:");
+                        int novaIdade = scanner.nextInt();
+                        scanner.nextLine();
+
+                        System.out.println("Novo email:");
+                        String novoEmail = scanner.nextLine();
+
+                        if (service.atualizarUsuario(emailAtualizar, novoNome, novaIdade, novoEmail)) {
+                            System.out.println("Usuario atualizado com sucesso!");
+                        } else {
+                            System.out.println("Usuario nao encontrado.");
+                        }
+                    break;
+
                     case 6:
                         System.out.println("Saindo...");
                         break;
@@ -42,92 +100,8 @@ public class Main {
                 }
             } while (opcao != 6);
 
-        }
+            scanner.close();
 
-        public static void cadastrarUsuario() {
-            System.out.println("Digite o nome do usuario:");
-            String nome = scanner.nextLine();
-            System.out.println("Digite a idade do usuario:");
-            int idade = scanner.nextInt();
-            scanner.nextLine(); 
-            System.out.println("Digite o email do usuario:");
-            String email = scanner.nextLine();
-            Usuario usuario = new Usuario(nome, idade, email);
-            usuarios.add(usuario);
-            System.out.println("Usuario cadastrado com sucesso!");
-
-
-        }
-
-        public static void listarUsuarios() {
-            if (usuarios.isEmpty()) {
-                System.out.println("Nenhum usuario cadastrado.");
-            } else {
-                for (Usuario usuario : usuarios) {
-                    System.out.println(usuario);
-                }
-            }
-        }
-
-        public static void buscarUsuario() {
-            System.out.println("Digite o email:");
-            String email = scanner.nextLine();
-            Usuario usuario = buscarPorEmail(email);
-                if (usuario != null) {
-                    System.out.println(usuario);
-             } else {
-                System.out.println("Usuario nao encontrado.");
-            }
-        }
-
-        public static Usuario buscarPorEmail(String email) {
-            for (Usuario usuario : usuarios) {
-                if (usuario.getEmail().equalsIgnoreCase(email)) {
-                    return usuario;
-                }
-        }
-        return null;
-        }
-
-        public static void removerUsuario() {
-            System.out.println("Digite o email:");
-            String email = scanner.nextLine();
-            if (removerPorEmail(email)) {
-                System.out.println("Usuario removido com sucesso!");
-            } else {
-                System.out.println("Usuario nao encontrado.");
-            }
-        }       
-
-        public static boolean removerPorEmail(String email) {
-            for (int i = 0; i < usuarios.size(); i++) {
-                if (usuarios.get(i).getEmail().equalsIgnoreCase(email)) {
-                    usuarios.remove(i);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static void atualizarUsuario() {
-            System.out.println("Digite o email:");
-            String email = scanner.nextLine();
-            Usuario usuario = buscarPorEmail(email);
-            if (usuario != null) {
-                System.out.println("Digite o novo nome do usuario:");
-                String nomeNovo = scanner.nextLine();
-                System.out.println("Digite a nova idade do usuario:");
-                int idadeNova = scanner.nextInt();
-                System.out.println("Digite o novo email do usuario:");
-                String emailNovo = scanner.nextLine();
-                scanner.nextLine(); 
-                usuario.setNome(nomeNovo);
-                usuario.setIdade(idadeNova);
-                usuario.setEmail(emailNovo);
-                System.out.println("Usuario atualizado com sucesso!");
-            } else {
-                System.out.println("Usuario nao encontrado.");
-            }
         }
 
 }
