@@ -33,9 +33,13 @@ public class Main {
                         String email = scanner.nextLine();
 
                         Usuario usuario = new Usuario(nome, idade, email);
-                        service.cadastrarUsuario(usuario);
 
-                        System.out.println("Usuario cadastrado com sucesso!");
+                        if (!service.cadastrarUsuario(usuario)) {
+                            System.out.println("Erro ao cadastrar usuario! Verifique os dados e tente novamente.");
+                        } else { 
+                            System.out.println("Usuario cadastrado com sucesso!"); 
+                        }
+
                         break;
                     
                     case 2:
@@ -56,7 +60,7 @@ public class Main {
                         if (encontrado != null) {
                             System.out.println("Usuario encontrado: " + encontrado);
                         } else {
-                            System.out.println("Usuario nao encontrado!");
+                            System.out.println("Usuario nao encontrado ou dados invalidos!");
                         }
                         break;
 
