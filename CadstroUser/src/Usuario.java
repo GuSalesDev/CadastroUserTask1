@@ -5,6 +5,7 @@ public class Usuario {
     private String nome;
     private int idade;
     private String email;
+    private StatusUsuario status;
 
     //Contrutor da classe Usuario
 
@@ -12,6 +13,7 @@ public class Usuario {
         this.nome = nome;
         this.idade = idade;
         this.email = email;
+        this.status = StatusUsuario.ATIVO;
     }
 
     //Getters e Setters para os atributos da classe Usuario
@@ -38,6 +40,14 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public StatusUsuario getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusUsuario status) {
+        this.status = status;
     }
 
     // Metodo tostring sobrescrito para exibir as informações do usuario de forma legivel

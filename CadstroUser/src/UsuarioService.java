@@ -30,7 +30,15 @@ public class UsuarioService {
     }
 
     public List<Usuario> listarUsuarios() {
-        return new ArrayList<>(usuarios);
+        List<Usuario> usuariosAtivos = new ArrayList<>();
+
+        for (Usuario usuario : usuarios) {
+            if (usuario.getStatus() == StatusUsuario.ATIVO) {
+                usuariosAtivos.add(usuario);
+            }
+        }
+
+        return usuariosAtivos;
     }
 
     public Usuario buscarPorEmail(String email) {
@@ -44,13 +52,18 @@ public class UsuarioService {
     }
 
     public boolean removerPorEmail(String email) {
-        for (int i = 0; i < usuarios.size(); i++) {
-            if (usuarios.get(i).getEmail().equals(email)) {
-                usuarios.remove(i);
-                return true;
-            }
+    Usuario usuario = buscarPorEmail(email);
+
+        if (usuario == null) {
+            return false;
         }
-        return false;
+        
+        if (usuario.getStatus() == StatusUsuario.INATIVO) {
+            return false;
+        }
+
+        usuario.setStatus(StatusUsuario.INATIVO);
+        return true;
     }
 
     public boolean atualizarUsuario(String emailAntigo, String novoNome, int novaIdade, String novoEmail) {
