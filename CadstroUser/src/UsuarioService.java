@@ -13,7 +13,7 @@ public class UsuarioService {
             return false;
         }
 
-        if (usuario.getIdade() <0 || usuario.getIdade() > 120) {
+        if (usuario.getIdade() <18 || usuario.getIdade() > 120) {
             return false;
         }
 
@@ -33,7 +33,7 @@ public class UsuarioService {
         List<Usuario> usuariosAtivos = new ArrayList<>();
 
         for (Usuario usuario : usuarios) {
-            if (usuario.getStatus() == StatusUsuario.ATIVO) {
+            if (usuario.getStatus() == StatusUsuario.ATIVO || usuario.getStatus() == StatusUsuario.BLOQUEADO) {
                 usuariosAtivos.add(usuario);
             }
         }
@@ -43,7 +43,7 @@ public class UsuarioService {
 
     public Usuario buscarPorEmail(String email) {
         for (Usuario usuario : usuarios) {
-            if (usuario.getEmail().equals(email)) {
+           if (email != null && email.equals(usuario.getEmail())) {
                 return usuario;
             }
         }
@@ -66,6 +66,40 @@ public class UsuarioService {
         return true;
     }
 
+    public boolean bloquearUsuario(String email) {
+        Usuario usuario = buscarPorEmail(email);
+
+        if (usuario == null) {
+            return false;
+        }
+
+        if (usuario.getStatus() == StatusUsuario.INATIVO) {
+            return false;
+        }
+
+        if (!usuario.getStatus().podeAtualizar()) {
+            return false;
+        }
+
+        usuario.setStatus(StatusUsuario.BLOQUEADO);
+        return true;
+    }
+
+    public boolean desbloquearUsuario(String email) {
+    Usuario usuario = buscarPorEmail(email);
+
+    if (usuario == null) {
+        return false;
+    }
+
+    if (!usuario.getStatus().podeSerDesbloqueado()) {
+        return false;
+    }
+
+    usuario.setStatus(usuario.getStatus().desbloquear());
+    return true;
+}
+
     public boolean atualizarUsuario(String emailAntigo, String novoNome, int novaIdade, String novoEmail) {
         Usuario usuario = buscarPorEmail(emailAntigo);
 
@@ -73,7 +107,7 @@ public class UsuarioService {
             return false;
         }
 
-        if (novaIdade < 0 || novaIdade > 120) {
+        if (novaIdade < 18 || novaIdade > 120) {
             return false;
         }
 
